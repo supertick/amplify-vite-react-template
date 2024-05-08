@@ -1,4 +1,5 @@
 import { type ClientSchema, a, defineData } from "@aws-amplify/backend";
+import { defineStorage } from '@aws-amplify/backend';
 
 /*== STEP 1 ===============================================================
 The section below creates a Todo database table with a "content" field. Try
@@ -55,3 +56,17 @@ Fetch records from the database and use them in your frontend component.
 // const { data: todos } = await client.models.Todo.list()
 
 // return <ul>{todos.map(todo => <li key={todo.id}>{todo.content}</li>)}</ul>
+
+export const storage = defineStorage({
+  name: 'uploadS3',
+  access: (allow) => ({
+    'profile-pictures/{entity_id}/*': [
+      allow.guest.to(['read']),
+      allow.entity('identity').to(['read', 'write', 'delete'])
+    ],
+    'picture-submissions/*': [
+      allow.authenticated.to(['read','write']),
+      allow.guest.to(['read', 'write'])
+    ],
+  })
+});
